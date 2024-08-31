@@ -19,7 +19,7 @@ jobs:
       - name: Fetch latest commits from sc-ui-common
         run: |
           # Define variables for the repo and branches
-          REPO="abhijeetpoonia/sc-ui-common"
+          REPO="abhijeetpoonia/my-ui-repo"
           BRANCH_EN="Prod-EN"
           BRANCH_FR="Prod-FR"
           API_URL="https://api.github.com/repos/$REPO/commits?sha="
@@ -47,7 +47,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.TOKEN }}
-          repository: abhijeetpoonia/sc-ui-common
+          repository: abhijeetpoonia/my-ui-repo
           event-type: trigger-prod-EN
           client-payload: |
             {
@@ -67,7 +67,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.TOKEN }}
-          repository: abhijeetpoonia/sc-ui-common
+          repository: abhijeetpoonia/my-ui-repo
           event-type: trigger-prod-FR
           client-payload: |
             {
