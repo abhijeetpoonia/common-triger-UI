@@ -41,7 +41,7 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           repository: Sleep-Country/sc-ui-dispatch
-          event-type: trigger-prod
+          event-type: trigger-prod-EN
           client-payload: |
             {
               "data": [
@@ -61,7 +61,7 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           repository: Sleep-Country/sc-ui-dispatch
-          event-type: trigger-prod
+          event-type: trigger-Prod-FR
           client-payload: |
             {
               "data": [
