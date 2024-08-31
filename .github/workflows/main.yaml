@@ -44,16 +44,12 @@ jobs:
           event-type: trigger-prod-EN
           client-payload: |
             {
-              "data": [
-                {
-                  "ref": "main",
-                  "commit_message": "${{ env.LATEST_COMMIT_EN }}",
-                  "sc_ui_dispatch_commits": {
-                    "Prod-EN": "${{ env.LATEST_COMMIT_PROD_EN }}"
-                  },
-                  "trigger-branch": "Prod-EN"
-                }
-              ]
+              "ref": "main",
+              "commit_message": "${{ env.LATEST_COMMIT_EN }}",
+              "sc_ui_dispatch_commits": {
+                "Prod-EN": "${{ env.LATEST_COMMIT_PROD_EN }}"
+              },
+              "trigger-branch": "Prod-EN"
             }
 
       - name: Trigger UI-Test workflow in sc-ui-dispatch for Prod-FR
@@ -61,17 +57,13 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           repository: Sleep-Country/sc-ui-dispatch
-          event-type: trigger-Prod-FR
+          event-type: trigger-prod-FR
           client-payload: |
             {
-              "data": [
-                {
-                  "ref": "main",
-                  "commit_message": "${{ env.LATEST_COMMIT_EN }}",
-                  "sc_ui_dispatch_commits": {
-                    "Prod-FR": "${{ env.LATEST_COMMIT_PROD_FR }}"
-                  },
-                  "trigger-branch": "Prod-FR"
-                }
-              ]
+              "ref": "main",
+              "commit_message": "${{ env.LATEST_COMMIT_EN }}",
+              "sc_ui_dispatch_commits": {
+                "Prod-FR": "${{ env.LATEST_COMMIT_PROD_FR }}"
+              },
+              "trigger-branch": "Prod-FR"
             }
