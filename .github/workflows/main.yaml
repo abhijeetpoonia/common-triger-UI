@@ -16,7 +16,7 @@ jobs:
         id: commit-info
         run: echo "LATEST_COMMIT_EN=$(git log -1 --format=%s)" >> $GITHUB_ENV
 
-      - name: Fetch latest commits from sc-ui-dispatch
+      - name: Fetch latest commits from sc-ui-common
         run: |
           # Define variables for the repo and branches
           REPO="abhijeetpoonia/sc-ui-common"
@@ -24,35 +24,39 @@ jobs:
           BRANCH_FR="Prod-FR"
           API_URL="https://api.github.com/repos/$REPO/commits?sha="
           # Fetch latest commits from Prod-EN and Prod-FR branches
-          curl -X GET "$API_URL$BRANCH_EN" -H "Authorization: Bearer ${{ secrets.TOKEN }}" > latest-commit-prod-en.json
-          curl -X GET "$API_URL$BRANCH_FR" -H "Authorization: Bearer ${{ secrets.TOKEN }}" > latest-commit-prod-fr.json
+          curl -X GET "${API_URL}${BRANCH_EN}" -H "Authorization: Bearer ${{ secrets.TOKEN }}" -o latest-commit-prod-en.json
+          curl -X GET "${API_URL}${BRANCH_FR}" -H "Authorization: Bearer ${{ secrets.TOKEN }}" -o latest-commit-prod-fr.json
 
       - name: Extract Commit Messages
         run: |
           # Extract commit messages from the JSON files
-          LATEST_COMMIT_PROD_EN=$(jq -r '.[0].commit.message' latest-commit-prod-en.json)
-          LATEST_COMMIT_PROD_FR=$(jq -r '.[0].commit.message' latest-commit-prod-fr.json)
+          LATEST_COMMIT_PROD_EN=$(jq -r '.[0].commit.message' < latest-commit-prod-en.json)
+          LATEST_COMMIT_PROD_FR=$(jq -r '.[0].commit.message' < latest-commit-prod-fr.json)
           # Set extracted values as environment variables
           echo "LATEST_COMMIT_PROD_EN=${LATEST_COMMIT_PROD_EN}" >> $GITHUB_ENV
           echo "LATEST_COMMIT_PROD_FR=${LATEST_COMMIT_PROD_FR}" >> $GITHUB_ENV
 
-      - name: Trigger UI-Test workflow in sc-ui-dispatch for Prod-EN
+      - name: Trigger UI-Test workflow in sc-ui-common for Prod-EN
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.TOKEN }}
-          repository: abhijeetpoonia/sc-ui-common 
+          repository: abhijeetpoonia/sc-ui-common
           event-type: trigger-prod-EN
           client-payload: |
             {
-              "ref": "main",
-              "commit_message": "${{ env.LATEST_COMMIT_EN }}",
-              "sc_ui_dispatch_commits": {
-                "Prod-EN": "${{ env.LATEST_COMMIT_PROD_EN }}"
-              },
-              "trigger-branch": "Prod-EN"
+              "data": [
+                {
+                  "ref": "main",
+                  "commit_message": "${{ env.LATEST_COMMIT_EN }}",
+                  "sc_ui_dispatch_commits": {
+                    "Prod-EN": "${{ env.LATEST_COMMIT_PROD_EN }}"
+                  },
+                  "trigger-branch": "Prod-EN"
+                }
+              ]
             }
 
-      - name: Trigger UI-Test workflow in sc-ui-dispatch for Prod-FR
+      - name: Trigger UI-Test workflow in sc-ui-common for Prod-FR
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.TOKEN }}
@@ -60,10 +64,14 @@ jobs:
           event-type: trigger-prod-FR
           client-payload: |
             {
-              "ref": "main",
-              "commit_message": "${{ env.LATEST_COMMIT_EN }}",
-              "sc_ui_dispatch_commits": {
-                "Prod-FR": "${{ env.LATEST_COMMIT_PROD_FR }}"
-              },
-              "trigger-branch": "Prod-FR"
+              "data": [
+                {
+                  "ref": "main",
+                  "commit_message": "${{ env.LATEST_COMMIT_EN }}",
+                  "sc_ui_dispatch_commits": {
+                    "Prod-FR": "${{ env.LATEST_COMMIT_PROD_FR }}"
+                  },
+                  "trigger-branch": "Prod-FR"
+                }
+              ]
             }
