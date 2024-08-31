@@ -27,11 +27,18 @@ jobs:
           curl -X GET "${API_URL}${BRANCH_EN}" -H "Authorization: Bearer ${{ secrets.TOKEN }}" -o latest-commit-prod-en.json
           curl -X GET "${API_URL}${BRANCH_FR}" -H "Authorization: Bearer ${{ secrets.TOKEN }}" -o latest-commit-prod-fr.json
 
+      - name: Print JSON Outputs
+        run: |
+          echo "Prod-EN JSON Output:"
+          cat latest-commit-prod-en.json
+          echo "Prod-FR JSON Output:"
+          cat latest-commit-prod-fr.json
+
       - name: Extract Commit Messages
         run: |
-          # Extract commit messages from the JSON files
-          LATEST_COMMIT_PROD_EN=$(jq -r '.[0].commit.message' < latest-commit-prod-en.json)
-          LATEST_COMMIT_PROD_FR=$(jq -r '.[0].commit.message' < latest-commit-prod-fr.json)
+          # Extract commit messages from the JSON files based on actual structure
+          LATEST_COMMIT_PROD_EN=$(jq -r '.[0].commit.message' < latest-commit-prod-en.json || jq -r '.commit.message' < latest-commit-prod-en.json)
+          LATEST_COMMIT_PROD_FR=$(jq -r '.[0].commit.message' < latest-commit-prod-fr.json || jq -r '.commit.message' < latest-commit-prod-fr.json)
           # Set extracted values as environment variables
           echo "LATEST_COMMIT_PROD_EN=${LATEST_COMMIT_PROD_EN}" >> $GITHUB_ENV
           echo "LATEST_COMMIT_PROD_FR=${LATEST_COMMIT_PROD_FR}" >> $GITHUB_ENV
